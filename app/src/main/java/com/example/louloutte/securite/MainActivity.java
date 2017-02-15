@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         EditText mdp = (EditText) findViewById(R.id.mdp);
         EditText chaine = (EditText) findViewById(R.id.chaine);
         String texte;
+        //message digest permet de créé un tableau de byte
         MessageDigest md = MessageDigest.getInstance("SHA");
         md.update(mdp.getText().toString().getBytes());
         byte[] digest = md.digest();
@@ -44,7 +45,9 @@ public class MainActivity extends AppCompatActivity {
         //creation secret key
         SecretKey sk=new SecretKeySpec(skfromdigest,"AES");
         Cipher c = Cipher.getInstance("AES");
+        //décryptage
         c.init (javax.crypto.Cipher.DECRYPT_MODE, sk);
+        //récupération fichier ou ont été enregistré les donnes (avec le save) il manque un if qui verifie si le fichier existe car sinon erreur
         File file=new File(view.getContext().getFilesDir()+File.separator+"fic");
         ObjectInputStream oos=new ObjectInputStream(new CipherInputStream(new FileInputStream(file),c));
         texte=(String)oos.readObject();
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickSave(View view) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
         EditText mdp = (EditText) findViewById(R.id.mdp);
         EditText chaine = (EditText) findViewById(R.id.chaine);
+        //message digest permet de créé un tableau de byte
         MessageDigest md = MessageDigest.getInstance("SHA");
         md.update(mdp.getText().toString().getBytes());
         byte[] digest = md.digest();
@@ -61,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
         //creation secret key
         SecretKey sk=new SecretKeySpec(skfromdigest,"AES");
         Cipher c = Cipher.getInstance("AES");
+        //cryptage
         c.init (javax.crypto.Cipher.ENCRYPT_MODE, sk);
+        //création du fichier ou sera enregistré les donnes
         File file=new File(view.getContext().getFilesDir()+File.separator+"fic");
         ObjectOutputStream oos=new ObjectOutputStream(new CipherOutputStream(new FileOutputStream(file),c));
         oos.writeObject(chaine.getText().toString());
